@@ -1,0 +1,4 @@
+import IntensityCalculator
+
+
+IntensityCalculator("linear", )
