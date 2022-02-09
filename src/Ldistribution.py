@@ -8,6 +8,7 @@ class Ldistribution(object):
     def __init__(self, function_type, parameters):
         self.parameters = parameters
         self.type = function_type
+        function_type = function_type.lower()
         if function_type == "linear":
             self._distribution = self.linear
         elif function_type == "exponential":
@@ -18,7 +19,7 @@ class Ldistribution(object):
             self._distribution = self.constant
 
     def distribution(self, X):
-        self._distribution(X, *self.parameters)
+        return self._distribution(X, *self.parameters)
 
     def linear(self, X):
         initial_population = np.zeros(len(X), dtype=float)
@@ -28,6 +29,7 @@ class Ldistribution(object):
                 initial_population[i] = (2*l + 1)/2
             else:
                 initial_population[i] = 1
+
         return normalise1d(initial_population)
 
     def exponential(self, X, alpha):

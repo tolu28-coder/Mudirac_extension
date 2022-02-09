@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 
 
 def population_in_energy_level(energy_level):
@@ -14,7 +15,7 @@ def states_in_energy_level(energy_level):
     return 2*(energy_level - 1) + 1
 
 
-def parse_mudirac_file(path, n_start, n_stop=0):
+def parse_mudirac_file(path, n_start=np.inf, n_stop=0):
     transitions = []
     transition_rates = []
     energy = []
@@ -23,9 +24,18 @@ def parse_mudirac_file(path, n_start, n_stop=0):
         next(csv_file)
         next(csv_file)
         for row in csv_file:
+            transition = row[0]
+            #print(row)
+            state1, state2 = parse_transition(transition)
+            n1, _ = parse_Iupac_notation(state1)
+            n2, _ = parse_Iupac_notation(state2)
+            if n1 > n_start or n2 > n_start:
+                continue
+            if n1 < n_stop or n2 < n_stop:
+                continue
             transitions.append(row[0])
             energy.append(float(row[1])/1000)
-            transition_rates.append(float(row[2]))
+            transition_rates.append(float(row[3]))
 
     return transitions, transition_rates, energy
 
@@ -43,7 +53,7 @@ def parse_Iupac_notation(state):
 
     else:
         shell = state[0]
-        subshell = state[-1:]
+        subshell = state[1:]
         n = int(ord(shell) - ord("J"))
         l = int(float(subshell)/2)
         return n, l
@@ -54,27 +64,29 @@ def get_filepath_for_element(element):
 
 
 def shell_to_IUPAC(n):
-    n = int(ord(n) - ord("J"))
+    shell = int(ord(n) - ord("J"))
+    return shell
 
 
 def normalise1d(array):
-    pass
+    result = array/np.sum(array)
+    return result
 
 
 def State_objects_below_range(n):
     states = []
     for i in range(1, n+1):
-        for j in range(1, states_in_energy_level(i)):
+        for j in range(1, states_in_energy_level(i) + 1):
             shell = str(chr(i + ord("J")))
             subshell = str(j)
             state = shell + subshell
             states.append(state)
-    return reversed(states)
+    return list(reversed(states))
 
 
 def State_objects_in_shell(n):
     states = []
-    for j in range(1, states_in_energy_level(n)):
+    for j in range(1, states_in_energy_level(n)+1):
         shell = str(chr(n + ord("J")))
         subshell = str(j)
         state = shell + subshell

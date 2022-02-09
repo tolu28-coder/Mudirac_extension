@@ -1,3 +1,6 @@
+from Misc import parse_Iupac_notation
+
+
 class Transition(object):
 
     def __init__(self, transition, transition_rate, energy):
@@ -34,7 +37,8 @@ class State(object):
         if start:
             sum_of_abs = proportion
         else:
-            sum_of_abs = proportion + sum([previous_transition.abs_probability for previous_transition in self.previous_transitions])
+            previous_trans = [previous_transition.abs_probability for previous_transition in self.previous_transitions]
+            sum_of_abs = proportion + sum(previous_trans)
         for transition in self.transitions:
             abs_probability = transition.rel_probability * sum_of_abs
             transition.set_absolute_probability(abs_probability)
@@ -94,7 +98,17 @@ class ProbabilityTree(object):
 
     def parse_transition(self, transition):
         states = transition.split('-')
-        return states[0].strip(), states[1].strip()
+        s1 = states[0].strip()
+        s2 = states[1].strip()
+        n1, l1 = parse_Iupac_notation(s1)
+        n2, l2 = parse_Iupac_notation(s2)
+        if n1 < n2:
+            s1, s2 = s2, s1
+        if n1 == n2:
+            if l1 < l2:
+                s1, s2 = s2, s1
+
+        return s1, s2
 
 
 if __name__ == "__main__":
