@@ -1,13 +1,20 @@
-from IntensityCalculator import IntensityCalculator
+#from IntensityCalculator import IntensityCalculator
 from Misc import parse_mudirac_file, State_objects_in_shell, parse_transition
 import numpy as np
+from Transition_Matrix import EnergyLevelTransitionMatrix
 
 path1 = r"C:\Users\Tolu\Documents\Mudirac data\mudirac_output_file\Gold.out"
 path2 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold22.out"
 
+matrix = EnergyLevelTransitionMatrix(11, 10)
+matrix.read_from_file(path2)
+matrix.calculate_steady_state()
+
+a = 2
+
 #Gold = IntensityCalculator("linear", 12, path2)
 #Gold.calculate_intensities()
-
+"""
 t1, r1, e1 = parse_mudirac_file(path1, 12, 0)
 t2, r2, e2 = parse_mudirac_file(path2, 12, 0)
 
@@ -23,11 +30,15 @@ for a in t2:
     if a not in t1:
         print(a)
 
-"""for a in diff:
+for a in diff:
     state1, state2 = parse_transition(a)
     for b in diff:
         if state1 in b and state2 in b and not (a == b):
-            print(a + " and " + b)"""
+            print(a + " and " + b)
+
+"""
+
+
 
 
 

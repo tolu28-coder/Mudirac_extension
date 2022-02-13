@@ -7,7 +7,7 @@ def population_in_energy_level(energy_level):
 
 
 def states_within_range(energy_level_start, energy_level_stop):
-    number_of_levels = energy_level_start-energy_level_stop
+    number_of_levels = energy_level_start-energy_level_stop + 1
     return (states_in_energy_level(energy_level_start)+states_in_energy_level(energy_level_stop))*0.5*number_of_levels
 
 
@@ -84,7 +84,10 @@ def shell_to_IUPAC(n):
 
 
 def normalise1d(array):
-    result = array/np.sum(array)
+    sum_array = np.sum(array)
+    result = array
+    if sum_array != 0:
+        result = array/sum_array
     return result
 
 
@@ -107,3 +110,16 @@ def State_objects_in_shell(n):
         state = shell + subshell
         states.append(state)
     return states
+
+
+def State_objects_within_range(n1,n2):
+    if n1 > n2:
+        n1 , n2 = n2, n1
+    states = []
+    for i in range(n1, n2 + 1):
+        for j in range(1, states_in_energy_level(i) + 1):
+            shell = str(chr(i + ord("J")))
+            subshell = str(j)
+            state = shell + subshell
+            states.append(state)
+    return list(reversed(states))
