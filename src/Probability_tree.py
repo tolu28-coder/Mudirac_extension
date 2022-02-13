@@ -29,7 +29,10 @@ class State(object):
                             self.transitions])
 
         for transition in self.transitions:
-            rel_probability = transition.transition_rate / sum_of_rates
+            if sum_of_rates == 0:
+                rel_probability = 0
+            else:
+                rel_probability = transition.transition_rate / sum_of_rates
             transition.set_relative_probability(rel_probability)
 
     def calculate_abs_probability(self, start, proportion=0):
