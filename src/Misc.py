@@ -12,7 +12,7 @@ def states_within_range(energy_level_start, energy_level_stop):
 
 
 def states_in_energy_level(energy_level):
-    return 2*(energy_level - 1) + 1
+    return 2*(energy_level) - 1
 
 
 def parse_mudirac_file(path, n_start=np.inf, n_stop=0):

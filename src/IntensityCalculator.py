@@ -22,14 +22,12 @@ class IntensityCalculator(object):
     def calculate_ldistribution(self, n_start):
         states = list(reversed(State_objects_in_shell(n_start)))
         X = []
-        print(states)
         for state in states:
             n , l = parse_Iupac_notation(state)
             X.append([l,n])
         X = np.array(X)
         distribution = self.ldistribution.distribution(X)
         l_distribution = {}
-        print(distribution)
         for i in range(len(states)):
             l_distribution[states[i]] = distribution[i]
 

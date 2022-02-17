@@ -1,22 +1,32 @@
-#from IntensityCalculator import IntensityCalculator
+from IntensityCalculator import IntensityCalculator
 from Misc import parse_mudirac_file, State_objects_in_shell, parse_transition
 import numpy as np
 from Transition_Matrix import EnergyLevelTransitionMatrix
+import matplotlib.pyplot as plt
 
 path1 = r"C:\Users\Tolu\Documents\Mudirac data\mudirac_output_file\Gold.out"
 path2 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold22.out"
+path3 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold20_1.out"
+path4 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Aluminium20.out"
+path5 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Carbon20.out"
+path6 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold16.out"
 
-matrix = EnergyLevelTransitionMatrix(11, 10)
+"""matrix = EnergyLevelTransitionMatrix(22, 12)
 matrix.read_from_file(path2)
-matrix.calculate_steady_state()
+matrix.calculate_steady_state(100)
+a = matrix.steady_state
+#a = matrix.normalised_transition_matrix+1
+#a = np.log(a)
+plt.plot(a)
+#plt.imshow(a)
+plt.show()
+"""
 
-a = 2
-
-#Gold = IntensityCalculator("linear", 12, path2)
-#Gold.calculate_intensities()
+Gold = IntensityCalculator("linear", 22, path2, params=[])
+Gold.calculate_intensities()
 """
 t1, r1, e1 = parse_mudirac_file(path1, 12, 0)
-t2, r2, e2 = parse_mudirac_file(path2, 12, 0)
+t2, r2, e2 = parse_mudirac_file(path3, 12, 0)
 
 data1 = np.array([r1, e1], dtype=float)
 data2 = np.array([r2, e2], dtype=float)
