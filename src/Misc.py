@@ -68,6 +68,7 @@ def parse_mudirac_file_completely(path):
 
     return transitions, transition_rates, energy
 
+
 def parse_transition(transition):
     states = transition.split('-')
     s1 = states[0].strip()
