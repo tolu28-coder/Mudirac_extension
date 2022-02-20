@@ -10,20 +10,22 @@ path3 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold20_1.out"
 path4 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Aluminium20.out"
 path5 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Carbon20.out"
 path6 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold16.out"
+path7 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold20Ideal.out"
+path8 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Iodine20Ideal.out"
 
-"""matrix = EnergyLevelTransitionMatrix(22, 12)
+matrix = EnergyLevelTransitionMatrix(22, 1)
 matrix.read_from_file(path2)
 matrix.calculate_steady_state(100)
 a = matrix.steady_state
-#a = matrix.normalised_transition_matrix+1
-#a = np.log(a)
+#a = matrix.transition_matrix+1
+#a = np.log(np.abs(a))
 plt.plot(a)
 #plt.imshow(a)
 plt.show()
-"""
 
-Gold = IntensityCalculator("linear", 22, path2, params=[])
-Gold.calculate_intensities()
+
+#Gold = IntensityCalculator("linear", 20, path7, params=[])
+#Gold.calculate_intensities()
 """
 t1, r1, e1 = parse_mudirac_file(path1, 12, 0)
 t2, r2, e2 = parse_mudirac_file(path3, 12, 0)

@@ -26,7 +26,6 @@ def parse_mudirac_file(path, n_start=np.inf, n_stop=0):
         for row in csv_file:
             transition = row[0]
             rate = float(row[3])
-            #print(row)
             state1, state2 = parse_transition(transition)
             n1, _ = parse_Iupac_notation(state1)
             n2, _ = parse_Iupac_notation(state2)
@@ -34,7 +33,8 @@ def parse_mudirac_file(path, n_start=np.inf, n_stop=0):
                 continue
             if n1 < n_stop or n2 < n_stop:
                 continue
-
+            if transition.find(state1) != 0:
+                rate = -rate
             transitions.append("-".join([state1, state2]))
             energy.append(float(row[1])/1000)
             if np.isnan(rate):
@@ -44,6 +44,29 @@ def parse_mudirac_file(path, n_start=np.inf, n_stop=0):
 
     return transitions, transition_rates, energy
 
+
+def parse_mudirac_file_completely(path):
+    transitions = []
+    transition_rates = []
+    energy = []
+    with open(path, "r") as file:
+        csv_file = csv.reader(file, delimiter="\t")
+        next(csv_file)
+        next(csv_file)
+        for row in csv_file:
+            transition = row[0]
+            rate = float(row[3])
+            state1, state2 = parse_transition(transition)
+            if transition.find(state1) != 0:
+                rate = -rate
+            transitions.append("-".join([state1, state2]))
+            energy.append(float(row[1]) / 1000)
+            if np.isnan(rate):
+                transition_rates.append(0)
+            else:
+                transition_rates.append(rate)
+
+    return transitions, transition_rates, energy
 
 def parse_transition(transition):
     states = transition.split('-')
