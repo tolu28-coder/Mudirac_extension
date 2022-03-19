@@ -37,6 +37,7 @@ def parse_mudirac_file(path, n_start=np.inf, n_stop=0):
                 rate = -rate
             transitions.append("-".join([state1, state2]))
             energy.append(float(row[1])/1000)
+
             if np.isnan(rate):
                 transition_rates.append(0)
             else:
@@ -45,10 +46,11 @@ def parse_mudirac_file(path, n_start=np.inf, n_stop=0):
     return transitions, transition_rates, energy
 
 
-def parse_mudirac_file_completely(path):
+def parse_mudirac_file_completely(path, n_start=np.inf, n_stop=0):
     transitions = []
     transition_rates = []
     energy = []
+    other_params = [[], []]
     with open(path, "r") as file:
         csv_file = csv.reader(file, delimiter="\t")
         next(csv_file)
@@ -56,17 +58,29 @@ def parse_mudirac_file_completely(path):
         for row in csv_file:
             transition = row[0]
             rate = float(row[3])
+            transition = row[0]
+            rate = float(row[3])
             state1, state2 = parse_transition(transition)
+            n1, _ = parse_Iupac_notation(state1)
+            n2, _ = parse_Iupac_notation(state2)
+            if n1 > n_start or n2 > n_start:
+                continue
+            if n1 < n_stop or n2 < n_stop:
+                continue
             if transition.find(state1) != 0:
                 rate = -rate
-            transitions.append("-".join([state1, state2]))
-            energy.append(float(row[1]) / 1000)
             if np.isnan(rate):
-                transition_rates.append(0)
+                other_params[0].append("-".join([state1, state2]))
+                other_params[1].append(float(row[1]) / 1000)
+                continue
             else:
                 transition_rates.append(rate)
+            state1, state2 = parse_transition(transition)
+            transitions.append("-".join([state1, state2]))
+            energy.append(float(row[1]) / 1000)
 
-    return transitions, transition_rates, energy
+
+    return transitions, transition_rates, energy, other_params
 
 
 def parse_transition(transition):

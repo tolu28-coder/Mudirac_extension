@@ -70,3 +70,24 @@ class Ldistribution(object):
         popt, pcov = curve_fit(self._distribution, X, steady_state, self.parameters)
         self.parameters = popt
         return self.parameters
+
+    def to_minimise(self, X, steady_state, *args):
+        n_dict = self.split_by_energy_level(X, steady_state)
+        total_diff = 0
+        for key in n_dict:
+            x, state = n_dict[key]
+            y = self._distribution(x, *args)
+            total_diff += np.sum(np.abs(y-state))
+        return total_diff
+
+    def split_by_energy_level(self, X, steady_state):
+        l, n = X[:, 0], X[:, 1]
+        set_of_n = list(set(n))
+        n_dict = {x: [[],[]] for x in set_of_n}
+        for i in range(len(l)):
+            n_dict[n[i]][0].append([l[i], n[i]])
+            n_dict[n[i]][1].append(steady_state[i])
+        for key in n_dict:
+            n_dict[key][0] = np.array(n_dict[key][0])
+            n_dict[key][1] = np.array(n_dict[key][1])
+        return n_dict

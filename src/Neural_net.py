@@ -7,7 +7,7 @@ from Misc import parse_transition, parse_Iupac_notation
 class NeuralNetwork(object):
 
     def __init__(self, path):
-        size = [4] + [10]*20 + [1]
+        size = [5] + [10]*20 + [1]
         self.neural_net = MLPRegressor(tuple(size), learning_rate="adaptive")
         self.path = path
 
@@ -38,6 +38,9 @@ class NeuralNetwork(object):
         transitions, rates, energy = self.read_file()
         self.training_input = []
         self.training_output = []
+        self.predict_input = []
+        self.known_transitions = []
+
         for i in range(len(transitions)):
             s1, s2 = parse_transition(transitions[i])
             input = [0,0,0,0,0]
@@ -47,6 +50,8 @@ class NeuralNetwork(object):
             if rates[i] is not None:
                 self.training_input.append(np.array(input))
                 self.training_output.append(rates[i])
+            else:
+                self.predict_input.append(np.array(input))
         self.training_input = np.array(self.training_input)
         self.training_output = np.array(self.training_output)
 
@@ -66,6 +71,4 @@ class NeuralNetwork(object):
         inputs = np.array(inputs)
         rates = self.neural_net.predict(inputs)
         return rates
-
-
 

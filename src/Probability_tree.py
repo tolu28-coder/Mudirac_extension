@@ -1,4 +1,5 @@
 from Misc import parse_Iupac_notation
+from Sorter import Sorter
 
 
 class Transition(object):
@@ -57,6 +58,7 @@ class ProbabilityTree(object):
         self.create_states(states)
         self.create_transitions(transition, transition_rate, energy)
         self.initial_distribution = initial_distribution
+        self.sorter = Sorter()
 
     def create_states(self, states):
         for state in states:
@@ -98,6 +100,16 @@ class ProbabilityTree(object):
                            str(transition.energy))
                 print(text)
             print('')
+
+    def sort_and_display(self):
+        for state in self.states:
+            if not self.states[state].transitions:
+                continue
+            for transition in self.states[state].transitions:
+                self.sorter.add_record(transition.energy, transition.abs_probability, transition.rel_probability,
+                                       transition.transition)
+            self.sorter.sort_by_intensity()
+            print(self.sorter)
 
     def parse_transition(self, transition):
         states = transition.split('-')

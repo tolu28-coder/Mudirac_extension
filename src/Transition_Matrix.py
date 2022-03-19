@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.linalg import expm
-from Misc import states_within_range, parse_mudirac_file, normalise1d, parse_transition, State_objects_within_range,\
+from Neural_net import NeuralNetwork
+from Misc import states_within_range, parse_mudirac_file_completely, normalise1d, parse_transition, State_objects_within_range,\
     states_in_energy_level, parse_mudirac_file_completely
 
 
@@ -16,26 +17,19 @@ class EnergyLevelTransitionMatrix(object):
         self.normalised_transition_matrix = np.zeros((self.matrix_size, self.matrix_size), dtype=float)
         self.steady_state = np.zeros(self.matrix_size, dtype=float)
         self.state_leaving_transition = {}
+        self.neural_net = None
         #self.steady_state = np.transpose(self.steady_state)
         #print(len(self.states_in_matrix), self.matrix_size)
 
-    def read_from_file(self, path):
-        """
-        self.transitions, self.rates, _ = parse_mudirac_file(path, self.n1, self.n2)
-        for i in range(len(self.transitions)):
-            transition = self.transitions[i]
-            rate = self.rates[i]
-            s1, s2 = parse_transition(transition)
-            index1, index2 = self.state_dict[s1], self.state_dict[s2]
-            self.transition_matrix[index1, index2] = rate
-        for i in range(len(self.transition_matrix)):
-            sum_of_trans = np.sum(self.transition_matrix[i])
-            if sum_of_trans == 0:
-                continue
-            self.normalised_transition_matrix[i] = self.transition_matrix[i]/sum_of_trans
-            """
-
-        self.transitions, self.rates, _ = parse_mudirac_file(path, self.n1, self.n2)
+    def read_from_file(self, path, neural_net=False):
+        self.transitions, self.rates, self.energy, other_params = parse_mudirac_file_completely(path, self.n1, self.n2)
+        self.neural_net = NeuralNetwork(path)
+        if neural_net:
+            self.neural_net.train_data()
+            other_rates = self.neural_net.predict_unknown_data(other_params[0], other_params[1])
+            self.transitions += other_params[0]
+            self.energy += other_params[1]
+            self.rates += list(other_rates)
         #self.get_emptying_rates(path)
         for i in range(len(self.transitions)):
             transition = self.transitions[i]
