@@ -22,8 +22,10 @@ class LdistributionCalculator(object):
         self.transition_matrix.calculate_steady_state()
 
 
-    def get_Ldistribution(self):
+    def get_Ldistribution(self, n1, n2):
         # calculate l-distribution and return l-distribution object
+        X, steady_state = self.transition_matrix.get_X_and_steady_states(n1,n2)
+        params = self.ldistribution.fit(X,steady_state)
+        return self.ldistribution
 
-        pass
 

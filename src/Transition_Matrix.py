@@ -2,7 +2,7 @@ import numpy as np
 from scipy.linalg import expm
 from Neural_net import NeuralNetwork
 from Misc import states_within_range, parse_mudirac_file_completely, normalise1d, parse_transition, State_objects_within_range,\
-    states_in_energy_level, parse_mudirac_file_completely
+    states_in_energy_level, parse_mudirac_file_completely, parse_Iupac_notation
 
 
 class EnergyLevelTransitionMatrix(object):
@@ -87,3 +87,16 @@ class EnergyLevelTransitionMatrix(object):
         for state in self.state_leaving_transition:
             index = self.state_dict[state]
             self.transition_matrix[index, index] = self.state_leaving_transition[state]
+
+    def get_X_and_steady_states(self, n1, n2):
+        all_states = State_objects_within_range(n1, n2)
+        steady_state = []
+        X = []
+        for state in all_states:
+            index = self.state_dict[state]
+            steady_state.append(self.steady_state[index])
+            n, l = parse_Iupac_notation(state)
+            X.append([n,l])
+        return X, steady_state
+
+
