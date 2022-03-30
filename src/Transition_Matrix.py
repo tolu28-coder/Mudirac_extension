@@ -96,7 +96,7 @@ class EnergyLevelTransitionMatrix(object):
             index = self.state_dict[state]
             steady_state.append(self.steady_state[index])
             n, l = parse_Iupac_notation(state)
-            X.append([n,l])
-        return X, steady_state
+            X.append([l,n])
+        return np.array(X), np.array(steady_state)
 
 

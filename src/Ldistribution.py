@@ -79,11 +79,11 @@ class Ldistribution(object):
         i = 0
         entire_y =[]
         for key in n_dict:
-            x, state = n_dict[key]
+            x = n_dict[key]
             y = args[i]*self._distribution(x, *other_arg)
             i += 1
-            entire_y += y
-        return entire_y
+            entire_y += list(y)
+        return np.array(entire_y)
 
     def split_by_energy_level(self, X):
         l, n = X[:, 0], X[:, 1]

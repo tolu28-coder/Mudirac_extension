@@ -2,6 +2,7 @@ from IntensityCalculator import IntensityCalculator
 from Misc import parse_mudirac_file, State_objects_in_shell, parse_transition
 import numpy as np
 from Transition_Matrix import EnergyLevelTransitionMatrix
+from Ldistribution_calculator import LdistributionCalculator
 import matplotlib.pyplot as plt
 
 path1 = r"C:\Users\Tolu\Documents\Mudirac data\mudirac_output_file\Gold.out"
@@ -14,20 +15,24 @@ path7 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold20Ideal.out
 path8 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Iodine20Ideal.out"
 path9 = r"C:\Users\Tolu\Documents\Mudirac_extension\Mudirac_data\Gold_40ideal.out"
 
-matrix = EnergyLevelTransitionMatrix(40, 1)
-matrix.read_from_file(path9)
-matrix.calculate_steady_state(100)
-a = matrix.steady_state
+#matrix = EnergyLevelTransitionMatrix(40, 1)
+#matrix.read_from_file(path9, True)
+#matrix.calculate_steady_state(100)
+#a = matrix.steady_state
 #a = matrix.transition_matrix+1
 #a = np.log(np.abs(a))
-plt.plot(a)
+#plt.plot(a)
 #plt.imshow(a)
-plt.show()
+#plt.show()
 
 save_file = "Gold_output.txt"
 
-#Gold = IntensityCalculator("exponential", 20, path2, neural_net=True, params=[0.2])
-#Gold.calculate_intensities()
+Gold = IntensityCalculator("quadratic", 20, path9, neural_net=True, params=[-0.01963793, 0.00133177])
+Gold.calculate_intensities()
+
+#Gold = LdistributionCalculator(path9, "quadratic", 40, 1)
+#ldistribution = Gold.get_Ldistribution(40, 20)
+#print(ldistribution.parameters)
 """
 t1, r1, e1 = parse_mudirac_file(path1, 12, 0)
 t2, r2, e2 = parse_mudirac_file(path3, 12, 0)

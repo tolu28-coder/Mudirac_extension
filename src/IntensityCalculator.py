@@ -22,6 +22,9 @@ class IntensityCalculator(object):
         l_distribution = self.calculate_ldistribution(n_start)
         self.probability_tree = ProbabilityTree(states, transitions, rates, energy, l_distribution)
 
+    def set_ldistribution(self, ldistribution):
+        self.ldistribution = ldistribution
+
     def parse_mudirac_file(self, filepath, n_start):
         pass
 

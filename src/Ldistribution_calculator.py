@@ -5,8 +5,8 @@ from Misc import get_filepath_for_element
 
 class LdistributionCalculator(object):
 
-    def __init__(self, element, type, n1, n2):
-        self.set_up_transition_matrix(element, n1, n2)
+    def __init__(self, element, type, n1, n2, neural_net):
+        self.set_up_transition_matrix(element, n1, n2, neural_net)
         if type == "constant" or type == "linear":
             params = []
         elif type == "exponential":
