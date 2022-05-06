@@ -8,7 +8,7 @@ class Sorter(object):
         self.records = sorted(self.records, key=lambda record: record.energy, reverse=True)
 
     def sort_by_intensity(self):
-        self.records = sorted(self.records, key=lambda record: record.intensity)
+        self.records = sorted(self.records, key=lambda record: record.intensity, reverse=True)
 
     def group_by_energy_and_sort_by_intensity(self, grouping):
         self.sort_by_energy()

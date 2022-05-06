@@ -122,6 +122,7 @@ def shell_to_IUPAC(n):
 
 
 def normalise1d(array):
+    array = np.array(array)
     sum_array = np.sum(array)
     result = array
     if sum_array != 0:

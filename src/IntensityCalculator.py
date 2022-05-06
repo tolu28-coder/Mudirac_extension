@@ -1,5 +1,4 @@
 import numpy as np
-from Transition_Matrix import EnergyLevelTransitionMatrix
 from Neural_net import NeuralNetwork
 from Ldistribution import Ldistribution
 from Probability_tree import ProbabilityTree
@@ -15,10 +14,11 @@ class IntensityCalculator(object):
         self.neural_net = NeuralNetwork(file_path)
         if neural_net:
             self.neural_net.train_data()
-            other_rates = self.neural_net.predict_unknown_data(other_params[0], other_params[1])
-            transitions += other_params[0]
-            energy += other_params[1]
-            rates += list(other_rates)
+            if len(other_params[0]):
+                other_rates = self.neural_net.predict_unknown_data(other_params[0], other_params[1])
+                transitions += other_params[0]
+                energy += other_params[1]
+                rates += list(other_rates)
         l_distribution = self.calculate_ldistribution(n_start)
         self.probability_tree = ProbabilityTree(states, transitions, rates, energy, l_distribution)
 
@@ -35,6 +35,7 @@ class IntensityCalculator(object):
         if file_name:
             file = open(file_name, "w")
             file.write(self.get_file_data())
+        return str(self.probability_tree.sorter)
 
     def get_file_data(self):
         all_data = str(self.probability_tree.sorter)

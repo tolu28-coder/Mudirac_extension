@@ -27,7 +27,7 @@ class Ldistribution(object):
         for i in range(len(X)):
             l, n = X[i]
             if l > 0:
-                initial_population[i] = (2*l + 1)
+                initial_population[i] = 2*l + 1
             else:
                 initial_population[i] = 1
 
@@ -38,19 +38,21 @@ class Ldistribution(object):
         for i in range(len(X)):
             l, n = X[i]
             if l > 0:
-                initial_population[i] = ((2*l+1)*np.exp(alpha*l))
+                initial_population[i] = (2*l+1)*np.exp(alpha*l)
             else:
                 initial_population[i] = 1
         return normalise1d(initial_population)
 
-    def quadratic(self, X, b, c):
+    def quadratic(self, X, a, b, c):
         initial_population = np.zeros(len(X), dtype=float)
         for i in range(len(X)):
             l, n = X[i]
-            if l != 1:
-                initial_population[i] = (1/n + b*(l - 0.5 *(n - 1)) + c*(l*l - (n - 1)*(2*n - 1)/6))
+            if l > 0:
+                #initial_population[i] = 1/n + b*(l - 0.5 *(n - 1)) + c*(l*l - (n - 1)*(2*n - 1)/6)
+                initial_population[i] = (b*l) + (c*l*l) + a
             else:
-                initial_population[i] = 1/n + b*(l - 0.5 *(n - 1)) + c*(l*l - (n - 1)*(2*n - 1)/6)
+                #initial_population[i] = 1/n + b*(l - 0.5 *(n - 1)) + c*(l*l - (n - 1)*(2*n - 1)/6)
+                initial_population[i] = (b*l) + (c*l*l) + a
         return normalise1d(initial_population)
 
     def constant(self, X):

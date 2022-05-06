@@ -10,9 +10,9 @@ class LdistributionCalculator(object):
         if type == "constant" or type == "linear":
             params = []
         elif type == "exponential":
-            params = [0]
+            params = [1]
         elif type == "quadratic":
-            params = [0, 0]
+            params = [1, 1, 1]
         self.ldistribution = Ldistribution(type, params)
 
     def set_up_transition_matrix(self, file_path, n1,n2, neural_net=False):

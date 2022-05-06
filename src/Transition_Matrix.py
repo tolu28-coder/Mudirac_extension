@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.linalg import expm
 from Neural_net import NeuralNetwork
+import math
 from Misc import states_within_range, parse_mudirac_file_completely, normalise1d, parse_transition, State_objects_within_range,\
-    states_in_energy_level, parse_mudirac_file_completely, parse_Iupac_notation
+    states_in_energy_level, parse_mudirac_file_completely, parse_Iupac_notation,shell_to_IUPAC
 
 
 class EnergyLevelTransitionMatrix(object):
@@ -37,6 +38,7 @@ class EnergyLevelTransitionMatrix(object):
             s1, s2 = parse_transition(transition)
             index1, index2 = self.state_dict[s1], self.state_dict[s2]
             self.transition_matrix[index1, index2] = rate
+            self.transition_matrix[index2, index1] = rate
         for i in range(len(self.transition_matrix)):
             sum_of_trans = np.sum(self.transition_matrix[i])
             if sum_of_trans == 0:
@@ -44,7 +46,10 @@ class EnergyLevelTransitionMatrix(object):
             self.normalised_transition_matrix[i] = self.transition_matrix[i] / sum_of_trans
             self.transition_matrix[i,i] = -sum_of_trans
             #self.normalised_transition_matrix[i,i] = -1
-        #self.probability_matrix = expm(self.transition_matrix*10e-15)
+        #eigenvalues, eigenvectors = np.linalg.eig(self.transition_matrix)
+        #maximum = np.max(eigenvalues)
+        #Q = np.diag(np.exp(eigenvalues/maximum))
+        #self.probability_matrix = eigenvectors @ Q @ np.linalg.inv(eigenvectors)
 
     def get_steady_state_population_levels(self):
         return self.steady_state
@@ -52,17 +57,14 @@ class EnergyLevelTransitionMatrix(object):
     def calculate_steady_state(self, passes=1000):
         j = states_in_energy_level(self.n1)
         k = states_in_energy_level(self.n2)
+
         for i in range(passes):
             self.steady_state[0:j] = self.steady_state[0:j] + 1
             self.steady_state = np.matmul(self.steady_state, self.normalised_transition_matrix)
             self.steady_state[-k:] = 0
-
-        #zero = np.zeros((self.matrix_size, 1))
-        #zero[0:j] = zero[0:j] - 1
-        #temp_matrix = self.normalised_transition_matrix - np.identity(self.matrix_size)
-        #self.steady_state = np.linalg.solve(temp_matrix, zero)
-
+            
         self.steady_state = normalise1d(self.steady_state)
+
 
     def get_transition_matrix(self):
         return self.transition_matrix
@@ -71,7 +73,7 @@ class EnergyLevelTransitionMatrix(object):
         return [self.n1, self.n2, self.matrix_size]
 
     def get_emptying_rates(self, path):
-        all_transitions, all_rates, _ = parse_mudirac_file_completely(path)
+        all_transitions, all_rates, _, _ = parse_mudirac_file_completely(path)
         for i in range(len(all_transitions)):
             transition = all_transitions[i]
             s1, s2 = parse_transition(transition)
@@ -98,5 +100,27 @@ class EnergyLevelTransitionMatrix(object):
             n, l = parse_Iupac_notation(state)
             X.append([l,n])
         return np.array(X), np.array(steady_state)
+
+    def seperate_steady_state_by_n(self):
+        steady_state = {k: [] for k in range(self.n2, self.n1+1)}
+
+        for state in self.state_dict:
+            index = self.state_dict[state]
+            n, l = state[0], state[1:]
+            n = shell_to_IUPAC(n)
+            l = int(l)
+            steady_state[n].append([l,self.steady_state[index]])
+
+        for n in steady_state:
+            values = steady_state[n]
+            values = sorted(values, key=lambda x: x[0])
+            all_l, all_s =[], []
+            for [l, s] in values:
+                all_l.append(l)
+                all_s.append(s)
+            values = [all_l, all_s]
+            steady_state[n] = values
+        return steady_state
+
 
 

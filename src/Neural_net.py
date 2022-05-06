@@ -6,8 +6,8 @@ from Misc import parse_transition, parse_Iupac_notation
 
 class NeuralNetwork(object):
 
-    def __init__(self, path):
-        size = [5] + [20]*60 + [1]
+    def __init__(self, path, hidden=10, n=20):
+        size = [hidden]*n
         self.neural_net = MLPRegressor(tuple(size), learning_rate="adaptive")
         self.path = path
 

@@ -109,7 +109,7 @@ class ProbabilityTree(object):
                 self.sorter.add_record(transition.energy, transition.abs_probability, transition.rel_probability,
                                        transition.transition)
             self.sorter.sort_by_intensity()
-            print(self.sorter)
+            #print(self.sorter)
 
     def parse_transition(self, transition):
         states = transition.split('-')
@@ -125,13 +125,3 @@ class ProbabilityTree(object):
 
         return s1, s2
 
-
-if __name__ == "__main__":
-    teststate = ['A', 'B', 'C', 'D']
-    testtransitions = ['A-B', 'A-C', 'A-D', 'B-C', 'B-D', 'C-D']
-    testrates = [6, 2, 2, 5, 5, 4]
-    testenergies = [10, 20, 30, 40, 50, 60]
-    test = ProbabilityTree(teststate, testtransitions, testrates, testenergies)
-    test.calculate_rel_probabilty()
-    test.calculate_abs_probabilty()
-    test.display_data()
